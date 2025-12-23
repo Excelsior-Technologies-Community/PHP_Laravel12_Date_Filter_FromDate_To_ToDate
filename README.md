@@ -267,6 +267,7 @@ php artisan migrate:fresh --seed
 ### Screenshot
 ## dashboard
 <img width="1619" height="966" alt="image" src="https://github.com/user-attachments/assets/ec9b8a14-c4e3-4dd0-a85d-2f602af6b23d" />
+
 ## Add Task
 <img width="1579" height="656" alt="image" src="https://github.com/user-attachments/assets/159d8ef3-3daa-444f-9cf3-636ef6fc423c" />
 ## 
