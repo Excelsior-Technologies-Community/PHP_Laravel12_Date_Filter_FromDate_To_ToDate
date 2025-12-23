@@ -270,6 +270,9 @@ php artisan migrate:fresh --seed
 
 ## Add Task
 <img width="1579" height="656" alt="image" src="https://github.com/user-attachments/assets/159d8ef3-3daa-444f-9cf3-636ef6fc423c" />
-## 
+
+## Filter Tasks
+<img width="1569" height="948" alt="image" src="https://github.com/user-attachments/assets/eb4100ea-8e01-43ad-af23-d5dae7b415f3" />
+
 
 
