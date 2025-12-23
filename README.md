@@ -264,7 +264,7 @@ php artisan migrate:fresh --seed
 
 ---
 
-### Screenshot
+# Screenshot
 ## dashboard
 <img width="1619" height="966" alt="image" src="https://github.com/user-attachments/assets/ec9b8a14-c4e3-4dd0-a85d-2f602af6b23d" />
 
