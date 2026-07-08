@@ -11,32 +11,98 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $query = Task::query();
-        
-        // Apply date filter if provided
-        if ($request->filled('from_date') && $request->filled('to_date')) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            
-            $query->whereBetween('task_date', [$fromDate, $toDate]);
-        } elseif ($request->filled('from_date')) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $query->where('task_date', '>=', $fromDate);
-        } elseif ($request->filled('to_date')) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $query->where('task_date', '<=', $toDate);
+
+        // ==========================
+        // Search
+        // ==========================
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
         }
-        
-        // Apply status filter if provided
-        if ($request->filled('status') && $request->status !== 'all') {
+
+        // ==========================
+        // Date Filter
+        // ==========================
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+
+            $query->whereBetween('task_date', [
+                Carbon::parse($request->from_date)->startOfDay(),
+                Carbon::parse($request->to_date)->endOfDay(),
+            ]);
+
+        } elseif ($request->filled('from_date')) {
+
+            $query->where(
+                'task_date',
+                '>=',
+                Carbon::parse($request->from_date)->startOfDay()
+            );
+
+        } elseif ($request->filled('to_date')) {
+
+            $query->where(
+                'task_date',
+                '<=',
+                Carbon::parse($request->to_date)->endOfDay()
+            );
+        }
+
+        // ==========================
+        // Status Filter
+        // ==========================
+        if ($request->filled('status') && $request->status != 'all') {
+
             $query->where('status', $request->status);
         }
-        
-        // Order by task date
-        $query->orderBy('task_date', 'desc');
-        
-        $tasks = $query->paginate(10);
-        
-        return view('tasks.index', compact('tasks'));
+
+        // ==========================
+        // Sorting
+        // ==========================
+        switch ($request->sort) {
+
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+
+            case 'oldest':
+                $query->orderBy('task_date', 'asc');
+                break;
+
+            default:
+                $query->orderBy('task_date', 'desc');
+        }
+
+        // ==========================
+        // Pagination
+        // ==========================
+        $tasks = $query->paginate(5)->appends($request->query());
+
+        // ==========================
+        // Dashboard Statistics
+        // ==========================
+        $stats = [
+
+            'total' => Task::count(),
+
+            'pending' => Task::where('status', 'pending')->count(),
+
+            'progress' => Task::where('status', 'in_progress')->count(),
+
+            'completed' => Task::where('status', 'completed')->count(),
+
+            'today' => Task::whereDate('task_date', today())->count(),
+
+        ];
+
+        return view('tasks.index', compact('tasks', 'stats'));
     }
 
     public function create()
@@ -47,15 +113,21 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+
+            'title' => 'required|max:255',
+
+            'description' => 'nullable',
+
             'task_date' => 'required|date',
-            'status' => 'required|in:pending,in_progress,completed'
+
+            'status' => 'required'
+
         ]);
 
         Task::create($request->all());
 
-        return redirect()->route('tasks.index')
+        return redirect()
+            ->route('tasks.index')
             ->with('success', 'Task created successfully.');
     }
 
@@ -67,15 +139,21 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+
+            'title' => 'required|max:255',
+
+            'description' => 'nullable',
+
             'task_date' => 'required|date',
-            'status' => 'required|in:pending,in_progress,completed'
+
+            'status' => 'required'
+
         ]);
 
         $task->update($request->all());
 
-        return redirect()->route('tasks.index')
+        return redirect()
+            ->route('tasks.index')
             ->with('success', 'Task updated successfully.');
     }
 
@@ -83,7 +161,8 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        return redirect()->route('tasks.index')
+        return redirect()
+            ->route('tasks.index')
             ->with('success', 'Task deleted successfully.');
     }
 }
