@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TaskController extends Controller
 {
@@ -20,7 +21,7 @@ class TaskController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -33,7 +34,6 @@ class TaskController extends Controller
                 Carbon::parse($request->from_date)->startOfDay(),
                 Carbon::parse($request->to_date)->endOfDay(),
             ]);
-
         } elseif ($request->filled('from_date')) {
 
             $query->where(
@@ -41,7 +41,6 @@ class TaskController extends Controller
                 '>=',
                 Carbon::parse($request->from_date)->startOfDay()
             );
-
         } elseif ($request->filled('to_date')) {
 
             $query->where(
@@ -103,6 +102,138 @@ class TaskController extends Controller
         ];
 
         return view('tasks.index', compact('tasks', 'stats'));
+    }
+
+    public function exportCsv(Request $request): StreamedResponse
+    {
+        $query = Task::query();
+
+        /*
+    |--------------------------------------------------------------------------
+    | Search
+    |--------------------------------------------------------------------------
+    */
+
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Date Filter
+    |--------------------------------------------------------------------------
+    */
+
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+
+            $query->whereBetween('task_date', [
+
+                Carbon::parse($request->from_date)->startOfDay(),
+                Carbon::parse($request->to_date)->endOfDay(),
+
+            ]);
+        } elseif ($request->filled('from_date')) {
+
+            $query->where(
+                'task_date',
+                '>=',
+                Carbon::parse($request->from_date)->startOfDay()
+            );
+        } elseif ($request->filled('to_date')) {
+
+            $query->where(
+                'task_date',
+                '<=',
+                Carbon::parse($request->to_date)->endOfDay()
+            );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Status
+    |--------------------------------------------------------------------------
+    */
+
+        if ($request->filled('status') && $request->status != 'all') {
+
+            $query->where('status', $request->status);
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Sort
+    |--------------------------------------------------------------------------
+    */
+
+        switch ($request->sort) {
+
+            case 'title_asc':
+                $query->orderBy('title');
+                break;
+
+            case 'title_desc':
+                $query->orderByDesc('title');
+                break;
+
+            case 'oldest':
+                $query->orderBy('task_date');
+                break;
+
+            default:
+                $query->orderByDesc('task_date');
+        }
+
+        $tasks = $query->get();
+
+        $fileName = 'tasks_' . now()->format('Y_m_d_H_i_s') . '.csv';
+
+        $headers = [
+
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$fileName}",
+
+        ];
+
+        $callback = function () use ($tasks) {
+
+            $file = fopen('php://output', 'w');
+
+            fputcsv($file, [
+
+                'ID',
+                'Title',
+                'Description',
+                'Task Date',
+                'Status',
+                'Created At'
+
+            ]);
+
+            foreach ($tasks as $task) {
+
+                fputcsv($file, [
+
+                    $task->id,
+                    $task->title,
+                    $task->description,
+                    $task->task_date->format('d-m-Y'),
+                    ucfirst(str_replace('_', ' ', $task->status)),
+                    $task->created_at->format('d-m-Y H:i')
+
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function create()
