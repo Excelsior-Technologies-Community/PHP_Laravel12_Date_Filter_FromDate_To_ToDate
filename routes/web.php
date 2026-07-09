@@ -7,4 +7,7 @@ Route::get('/', function () {
     return redirect()->route('tasks.index');
 });
 
+Route::get('/tasks/export/csv', [TaskController::class, 'exportCsv'])
+    ->name('tasks.export.csv');
+
 Route::resource('tasks', TaskController::class);

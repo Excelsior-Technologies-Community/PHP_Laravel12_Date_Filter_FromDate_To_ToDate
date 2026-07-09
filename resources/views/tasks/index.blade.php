@@ -4,444 +4,725 @@
 
 @section('content')
 
-    {{-- Dashboard Statistics --}}
+{{-- Dashboard Statistics --}}
 
-    <div class="row mb-4">
+<div class="row mb-4">
 
-        <div class="col-md-2">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Total Tasks</h6>
-                    <h3 class="fw-bold text-primary">
-                        {{ $stats['total'] }}
-                    </h3>
-                </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Total Tasks</h6>
+                <h3 class="fw-bold text-primary">
+                    {{ $stats['total'] }}
+                </h3>
             </div>
         </div>
-
-        <div class="col-md-2">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Pending</h6>
-                    <h3 class="fw-bold text-warning">
-                        {{ $stats['pending'] }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">In Progress</h6>
-                    <h3 class="fw-bold text-info">
-                        {{ $stats['progress'] }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Completed</h6>
-                    <h3 class="fw-bold text-success">
-                        {{ $stats['completed'] }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Today's Tasks</h6>
-                    <h3 class="fw-bold text-danger">
-                        {{ $stats['today'] }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    {{-- Filter Section --}}
-
-    <div class="date-filter">
-
-        <h5 class="mb-3">
-            <i class="bi bi-funnel"></i>
-            Search & Filter Tasks
-        </h5>
-
-        <form method="GET" action="{{ route('tasks.index') }}">
-
-            <div class="row">
-
-                {{-- Search --}}
-
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">
-                        Search
-                    </label>
-
-                    <input type="text" name="search" class="form-control" placeholder="Search title or description..."
-                        value="{{ request('search') }}">
-                </div>
-
-                {{-- From Date --}}
-
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">
-                        From Date
-                    </label>
-
-                    <input type="date" name="from_date" id="from_date" class="form-control"
-                        value="{{ request('from_date') }}">
-                </div>
-
-                {{-- To Date --}}
-
-                <div class="col-md-2 mb-3">
-                    <label class="form-label">
-                        To Date
-                    </label>
-
-                    <input type="date" name="to_date" id="to_date" class="form-control" value="{{ request('to_date') }}">
-                </div>
-
-                {{-- Status --}}
-
-                <div class="col-md-2 mb-3">
-
-                    <label class="form-label">
-                        Status
-                    </label>
-
-                    <select name="status" class="form-select">
-
-                        <option value="all">
-                            All Status
-                        </option>
-
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
-                            Pending
-                        </option>
-
-                        <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>
-                            In Progress
-                        </option>
-
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
-                            Completed
-                        </option>
-
-                    </select>
-
-                </div>
-
-                {{-- Sort --}}
-
-                <div class="col-md-3 mb-3">
-
-                    <label class="form-label">
-                        Sort By
-                    </label>
-
-                    <select name="sort" class="form-select">
-
-                        <option value="latest">
-                            Latest Tasks
-                        </option>
-
-                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>
-                            Oldest Tasks
-                        </option>
-
-                        <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>
-                            Title A-Z
-                        </option>
-
-                        <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>
-                            Title Z-A
-                        </option>
-
-                    </select>
-
-                </div>
-
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Pending</h6>
+                <h3 class="fw-bold text-warning">
+                    {{ $stats['pending'] }}
+                </h3>
             </div>
-
-            <div class="mt-2">
-
-                <button type="submit" class="btn btn-primary">
-
-                    <i class="bi bi-search"></i>
-                    Apply Filter
-
-                </button>
-
-                <a href="{{ route('tasks.index') }}" class="btn btn-secondary">
-
-                    <i class="bi bi-arrow-clockwise"></i>
-                    Reset
-
-                </a>
-
-            </div>
-
-        </form>
-
+        </div>
     </div>
 
-    {{-- Task List --}}
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">In Progress</h6>
+                <h3 class="fw-bold text-info">
+                    {{ $stats['progress'] }}
+                </h3>
+            </div>
+        </div>
+    </div>
 
-    <div class="card">
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Completed</h6>
+                <h3 class="fw-bold text-success">
+                    {{ $stats['completed'] }}
+                </h3>
+            </div>
+        </div>
+    </div>
 
-        <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Today's Tasks</h6>
+                <h3 class="fw-bold text-danger">
+                    {{ $stats['today'] }}
+                </h3>
+            </div>
+        </div>
+    </div>
 
-            <h5 class="mb-0">
-                <i class="bi bi-list-task"></i>
-                Task List
-            </h5>
+</div>
 
-            <span class="badge bg-primary fs-6">
-                {{ $tasks->total() }} Tasks Found
-            </span>
+{{-- Filter Section --}}
+
+<div class="date-filter">
+
+    <h5 class="mb-3">
+        <i class="bi bi-funnel"></i>
+        Search & Filter Tasks
+    </h5>
+
+    <form method="GET" action="{{ route('tasks.index') }}">
+
+        <div class="row">
+
+            {{-- Search --}}
+
+            <div class="col-md-3 mb-3">
+                <label class="form-label">
+                    Search
+                </label>
+
+                <input type="text" name="search" class="form-control" placeholder="Search title or description..."
+                    value="{{ request('search') }}">
+            </div>
+
+            {{-- Date Presets --}}
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label fw-bold">
+
+                    <i class="bi bi-calendar-range"></i>
+                    Quick Date Filter
+
+                </label>
+
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="today">
+
+                        Today
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="yesterday">
+
+                        Yesterday
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="7days">
+
+                        Last 7 Days
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="30days">
+
+                        Last 30 Days
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="month">
+
+                        This Month
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="last_month">
+
+                        Last Month
+
+                    </button>
+
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm date-preset"
+                        data-range="year">
+
+                        This Year
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            {{-- From Date --}}
+
+            <div class="col-md-2 mb-3">
+
+                <label class="form-label">
+                    From Date
+                </label>
+
+                <input type="date"
+                    name="from_date"
+                    id="from_date"
+                    class="form-control"
+                    value="{{ request('from_date') }}">
+
+            </div>
+
+
+            {{-- To Date --}}
+
+            <div class="col-md-2 mb-3">
+
+                <label class="form-label">
+                    To Date
+                </label>
+
+                <input type="date"
+                    name="to_date"
+                    id="to_date"
+                    class="form-control"
+                    value="{{ request('to_date') }}">
+
+            </div>
+
+            {{-- Status --}}
+
+            <div class="col-md-2 mb-3">
+
+                <label class="form-label">
+                    Status
+                </label>
+
+                <select name="status" class="form-select">
+
+                    <option value="all" {{ request('status','all') == 'all' ? 'selected' : '' }}>
+                        All Status
+                    </option>
+
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                        Pending
+                    </option>
+
+                    <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>
+                        In Progress
+                    </option>
+
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
+                        Completed
+                    </option>
+
+                </select>
+
+            </div>
+
+            {{-- Sort --}}
+
+            <div class="col-md-3 mb-3">
+
+                <label class="form-label">
+                    Sort By
+                </label>
+
+                <select name="sort" class="form-select">
+
+                    <option value="latest">
+                        Latest Tasks
+                    </option>
+
+                    <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>
+                        Oldest Tasks
+                    </option>
+
+                    <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>
+                        Title A-Z
+                    </option>
+
+                    <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>
+                        Title Z-A
+                    </option>
+
+                </select>
+
+            </div>
 
         </div>
 
-        <div class="card-body">
+        <div class="mt-2 d-flex gap-2 flex-wrap">
 
-            @if($tasks->count())
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i>
+                Apply Filter
+            </button>
 
-                <div class="table-responsive">
+            <a href="{{ route('tasks.index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-clockwise"></i>
+                Reset
+            </a>
 
-                    <table class="table table-hover align-middle">
+            <a href="{{ route('tasks.export.csv', request()->query()) }}"
+                class="btn btn-success">
+                <i class="bi bi-download"></i>
+                Export CSV
+            </a>
 
-                        <thead class="table-light">
+        </div>
 
-                            <tr>
+        @if(
+        request('search') ||
+        request('from_date') ||
+        request('to_date') ||
+        (request('status') && request('status') != 'all')
+        )
 
-                                <th>#</th>
+        <div class="mt-3">
 
-                                <th>Title</th>
+            <div class="alert alert-light border">
 
-                                <th>Description</th>
+                <strong>
+                    <i class="bi bi-funnel-fill text-primary"></i>
+                    Active Filters:
+                </strong>
 
-                                <th>Task Date</th>
+                @if(request('search'))
 
-                                <th>Status</th>
-
-                                <th width="180">
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            @foreach($tasks as $task)
-
-                                <tr>
-
-                                    <td>
-                                        {{ $loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage() }}
-                                    </td>
-
-                                    <td>
-                                        <strong>
-                                            {{ $task->title }}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        {{ \Illuminate\Support\Str::limit($task->description, 50) }}
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="bi bi-calendar-event"></i>
-                                            {{ $task->task_date->format('d M Y') }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        @if($task->status == 'pending')
-                                            <span class="status-badge status-pending">
-                                                Pending
-                                            </span>
-                                        @elseif($task->status == 'in_progress')
-                                            <span class="status-badge status-in_progress">
-                                                In Progress
-                                            </span>
-                                        @else
-                                            <span class="status-badge status-completed">
-                                                Completed
-                                            </span>
-                                        @endif
-                                    </td>
-
-                                    <td>
-
-                                        <a href="{{ route('tasks.edit', $task) }}" class="btn btn-sm btn-outline-primary">
-
-                                            <i class="bi bi-pencil"></i>
-
-                                        </a>
-
-                                        <form action="{{ route('tasks.destroy', $task) }}" method="POST"
-                                            class="d-inline delete-form">
-
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-
-                                                <i class="bi bi-trash"></i>
-
-                                            </button>
-
-                                        </form>
-
-                                    </td>
-
-                                </tr>
-
-                            @endforeach
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                @if ($tasks->lastPage() > 1)
-
-                    <div class="d-flex justify-content-center mt-4">
-
-                        <nav>
-
-                            <ul class="pagination">
-
-                                @for ($i = 1; $i <= $tasks->lastPage(); $i++)
-
-                                    <li class="page-item {{ $tasks->currentPage() == $i ? 'active' : '' }}">
-
-                                        <a class="page-link" href="{{ $tasks->appends(request()->query())->url($i) }}">
-
-                                            {{ $i }}
-
-                                        </a>
-
-                                    </li>
-
-                                @endfor
-
-                            </ul>
-
-                        </nav>
-
-                    </div>
+                <span class="badge bg-primary ms-2">
+                    Search: {{ request('search') }}
+                </span>
 
                 @endif
 
-            @else
 
-                <div class="text-center py-5">
+                @if(request('from_date'))
 
-                    <i class="bi bi-inbox display-1 text-secondary"></i>
+                <span class="badge bg-info ms-2">
+                    From:
+                    {{ \Carbon\Carbon::parse(request('from_date'))->format('d M Y') }}
+                </span>
 
-                    <h4 class="mt-3">
-                        No Tasks Found
-                    </h4>
+                @endif
 
-                    <p class="text-muted">
 
-                        No records match your search or filter.
+                @if(request('to_date'))
 
-                    </p>
+                <span class="badge bg-info ms-2">
+                    To:
+                    {{ \Carbon\Carbon::parse(request('to_date'))->format('d M Y') }}
+                </span>
 
-                    <a href="{{ route('tasks.create') }}" class="btn btn-primary">
+                @endif
 
-                        <i class="bi bi-plus-circle"></i>
 
-                        Create Task
+                @if(request('status') && request('status') != 'all')
 
-                    </a>
+                <span class="badge bg-success ms-2">
+                    Status:
+                    {{ ucfirst(str_replace('_',' ',request('status'))) }}
+                </span>
 
-                </div>
+                @endif
 
-            @endif
+            </div>
 
         </div>
 
+        @endif
+
+    </form>
+
+</div>
+
+{{-- Task List --}}
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            <i class="bi bi-list-task"></i>
+            Task List
+        </h5>
+
+        <span class="badge bg-primary fs-6">
+            {{ $tasks->total() }} Tasks Found
+        </span>
+
     </div>
+
+    <div class="card-body">
+
+        @if($tasks->count())
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Title</th>
+
+                        <th>Description</th>
+
+                        <th>Task Date</th>
+
+                        <th>Status</th>
+
+                        <th width="180">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach($tasks as $task)
+
+                    <tr>
+
+                        <td>
+                            {{ $loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage() }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ $task->title }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ \Illuminate\Support\Str::limit($task->description, 50) }}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-light text-dark">
+                                <i class="bi bi-calendar-event"></i>
+                                {{ $task->task_date->format('d M Y') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            @if($task->status == 'pending')
+                            <span class="status-badge status-pending">
+                                Pending
+                            </span>
+                            @elseif($task->status == 'in_progress')
+                            <span class="status-badge status-in_progress">
+                                In Progress
+                            </span>
+                            @else
+                            <span class="status-badge status-completed">
+                                Completed
+                            </span>
+                            @endif
+                        </td>
+
+                        <td>
+
+                            <a href="{{ route('tasks.edit', $task) }}" class="btn btn-sm btn-outline-primary">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </a>
+
+                            <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                                class="d-inline delete-form">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    @endforeach
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        @if ($tasks->lastPage() > 1)
+
+        <div class="d-flex justify-content-center mt-4">
+
+            <nav>
+
+                <ul class="pagination">
+
+                    @for ($i = 1; $i <= $tasks->lastPage(); $i++)
+
+                        <li class="page-item {{ $tasks->currentPage() == $i ? 'active' : '' }}">
+
+                            <a class="page-link" href="{{ $tasks->appends(request()->query())->url($i) }}">
+
+                                {{ $i }}
+
+                            </a>
+
+                        </li>
+
+                        @endfor
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+        @endif
+
+        @else
+
+        <div class="text-center py-5">
+
+            <i class="bi bi-calendar-x display-1 text-secondary"></i>
+
+            <h4 class="mt-3">
+                No Tasks Found
+            </h4>
+
+            <p class="text-muted">
+
+                Try changing your date range or clearing filters.
+
+            </p>
+
+            <a href="{{ route('tasks.create') }}" class="btn btn-primary">
+
+                <i class="bi bi-plus-circle"></i>
+
+                Create Task
+
+            </a>
+
+        </div>
+
+        @endif
+
+    </div>
+
+</div>
 
 @endsection
 
 @push('scripts')
 
-    <script>
+<script>
+    document.querySelectorAll('.delete-form').forEach(function(form) {
 
-        document.querySelectorAll('.delete-form').forEach(function (form) {
+        form.addEventListener('submit', function(e) {
 
-            form.addEventListener('submit', function (e) {
+            e.preventDefault();
 
-                e.preventDefault();
+            Swal.fire({
 
-                Swal.fire({
+                title: 'Delete Task?',
 
-                    title: 'Delete Task?',
+                text: "You won't be able to recover this task.",
 
-                    text: 'You won't be able to recover this task.',
+                icon: 'warning',
 
-                    icon: 'warning',
+                showCancelButton: true,
 
-                    showCancelButton: true,
+                confirmButtonColor: '#dc3545',
 
-                    confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
 
-                    cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Delete'
 
-                    confirmButtonText: 'Yes, Delete'
+            }).then((result) => {
 
-                }).then((result) => {
+                if (result.isConfirmed) {
 
-                    if (result.isConfirmed) {
+                    form.submit();
 
-                        form.submit();
-
-                    }
-
-                });
+                }
 
             });
 
         });
 
-        const fromDate = document.getElementById('from_date');
+    });
 
-        const toDate = document.getElementById('to_date');
+    const fromDate = document.getElementById('from_date');
 
-        if (fromDate && toDate) {
+    const toDate = document.getElementById('to_date');
 
-            fromDate.addEventListener('change', function () {
+    if (fromDate && toDate) {
 
-                toDate.min = this.value;
+        fromDate.addEventListener('change', function() {
+
+            toDate.min = this.value;
+
+        });
+
+        toDate.addEventListener('change', function() {
+
+            fromDate.max = this.value;
+
+        });
+
+    }
+
+    // ===============================
+    // Quick Date Presets
+    // ===============================
+
+    document.querySelectorAll('.date-preset')
+        .forEach(button => {
+
+            button.addEventListener('click', function() {
+
+
+                document.querySelectorAll('.date-preset')
+                    .forEach(btn => btn.classList.remove('active'));
+
+
+                this.classList.add('active');
+
+
+                let range = this.dataset.range;
+
+
+                let today = new Date();
+
+
+                let from = new Date(today);
+                let to = new Date(today);
+
+
+
+                switch (range) {
+
+
+                    case 'today':
+
+                        break;
+
+
+                    case 'yesterday':
+
+                        from.setDate(today.getDate() - 1);
+                        to.setDate(today.getDate() - 1);
+
+                        break;
+
+
+                    case '7days':
+
+                        from.setDate(today.getDate() - 6);
+
+                        break;
+
+
+                    case '30days':
+
+                        from.setDate(today.getDate() - 29);
+
+                        break;
+
+
+                    case 'month':
+
+                        from = new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            1
+                        );
+
+                        break;
+
+
+                    case 'last_month':
+
+                        from = new Date(
+                            today.getFullYear(),
+                            today.getMonth() - 1,
+                            1
+                        );
+
+
+                        to = new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            0
+                        );
+
+                        break;
+
+
+
+                    case 'year':
+
+                        from = new Date(
+                            today.getFullYear(),
+                            0,
+                            1
+                        );
+
+                        break;
+
+                }
+
+                document.getElementById('from_date').value = formatDate(from);
+
+                document.getElementById('to_date').value = formatDate(to);
+
+                // Auto apply filter
+                this.closest('form').submit();
 
             });
 
-            toDate.addEventListener('change', function () {
 
-                fromDate.max = this.value;
+        });
 
-            });
 
-        }
 
-    </script>
+    function formatDate(date) {
+
+        let month = String(date.getMonth() + 1)
+            .padStart(2, '0');
+
+
+        let day = String(date.getDate())
+            .padStart(2, '0');
+
+
+        return `${date.getFullYear()}-${month}-${day}`;
+
+    }
+</script>
 
 @endpush
